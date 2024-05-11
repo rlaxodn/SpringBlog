@@ -1,0 +1,23 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시글 작성</title>
+</head>
+<body>
+
+    <h1>게시글 작성</h1>
+    <form action="/postProc" method="post" name="postForm">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br>
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content"></textarea><br>
+        <input id="username" type="hidden" name="username" value="{{username}}">
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>
