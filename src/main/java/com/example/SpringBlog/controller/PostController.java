@@ -2,6 +2,7 @@ package com.example.SpringBlog.controller;
 
 import com.example.SpringBlog.dto.PostDTO;
 import com.example.SpringBlog.entity.PostEntity;
+import com.example.SpringBlog.entity.UserEntity;
 import com.example.SpringBlog.repository.PostRepository;
 import com.example.SpringBlog.repository.UserRepository;
 import com.example.SpringBlog.service.PostService;
@@ -23,6 +24,9 @@ public class PostController {
     PostService postService;
     @Autowired
     PostRepository postRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping("/post")
     public String post(Model model){
@@ -62,6 +66,37 @@ public class PostController {
         } else {
             // 게시글이 없을 경우 처리
             return "redirect:/postList";
+        }
+    }
+
+    //My Posts
+    @GetMapping("/myPosts")
+    public String myPost(Model model){
+
+        //session user username
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //DB에서 user의 게시글을 불러옴
+        UserEntity userEntity = userRepository.findByUsername(username);
+        List<PostEntity> posts = postRepository.findByUser(userEntity);
+
+        model.addAttribute("posts", posts);
+        return "myPosts";
+    }
+
+    //My Post Detail
+    @GetMapping("/my/post/{id}")
+    public String myPostDetail(@PathVariable("id") int id, Model model){
+
+        //postEntity에서 ID로 게시글 정보를 찾음
+        Optional<PostEntity> postOptional = postRepository.findById(id);
+        if (postOptional.isPresent()) {
+            PostEntity post = postOptional.get();
+            model.addAttribute("post", post);
+            return "myPostDetail";
+        } else {
+            // 게시글이 없을 경우 처리
+            return "redirect:/myPosts";
         }
     }
 }
